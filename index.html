@@ -16,7 +16,9 @@
             position: relative;
             width: 100%;
             max-width: 800px;
-            aspect-ratio: 1.77; /* Match image aspect ratio */
+            /* Responsive aspect ratio with a max height for tall screens */
+            height: 56.25vw; 
+            max-height: calc(100vh - 280px);
             margin: auto;
             overflow: hidden;
             border-radius: 1rem;
@@ -53,15 +55,15 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            font-size: clamp(1.2rem, 5vw, 2.2rem);
+            font-size: clamp(1rem, 5vw, 2.2rem); /* Adjusted min size for mobile */
             font-weight: 400;
             text-align: center;
-            color: black; /* Changed to black */
+            color: black; 
             padding: 1rem;
             width: 45%;
             line-height: 1.1;
-            transition: opacity 0.2s ease-out; /* Add transition for smooth fade */
-            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.4); /* Adjusted for black text */
+            transition: opacity 0.2s ease-out; 
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.4); 
         }
 
         #negative-text {
@@ -71,14 +73,14 @@
 
         #positive-text {
             left: 5%;
-            z-index: 3; /* Above the positive image */
-            clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%); /* Sync with image clip-path */
+            z-index: 3; 
+            clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%); 
         }
 
         #slider {
             position: absolute;
             top: 0;
-            left: 0%; /* Start at the left */
+            left: 0%; 
             width: 4px;
             height: 100%;
             background-color: rgba(255, 255, 255, 0.8);
@@ -91,11 +93,11 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 40px;
-            height: 40px;
-            background-color: #10B981; /* Changed to green */
+            width: 44px; /* Larger touch target for mobile */
+            height: 44px;
+            background-color: #10B981; 
             border-radius: 50%;
-            border: 2px solid #059669; /* Darker green border */
+            border: 2px solid #059669; 
             transform: translate(-50%, -50%);
             display: flex;
             align-items: center;
@@ -106,16 +108,16 @@
         #slider-handle svg {
             width: 24px;
             height: 24px;
-            color: white; /* Changed to white for contrast */
+            color: white; 
         }
 
     </style>
 </head>
 <body class="bg-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div class="text-center mb-8 max-w-3xl mx-auto">
-        <h1 class="text-3xl md:text-4xl font-bold text-white">Change Your Thinking</h1>
-        <p class="text-gray-400 mt-4 font-sans" style="font-family: 'Inter', sans-serif;">Urges can feel pretty “loud” in your mind. It’s important that you learn how to talk back to these urges. Here are some suggestions for having a more positive mindset about quitting and urges:</p>
+    <div class="text-center mb-6 max-w-3xl mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-bold text-white">Change Your Thinking</h1>
+        <p class="text-gray-400 mt-3 text-sm sm:text-base font-sans" style="font-family: 'Inter', sans-serif;">Urges can feel pretty “loud” in your mind. It’s important that you learn how to talk back to these urges. Here are some suggestions for having a more positive mindset about quitting and urges:</p>
     </div>
 
     <div id="swipe-container" class="swipe-container">
@@ -142,11 +144,11 @@
     </div>
     
     <!-- Navigation Buttons -->
-    <div class="flex items-center space-x-4 mt-8">
+    <div class="flex items-center space-x-4 mt-6">
         <button id="prev-btn" class="bg-gray-700 text-white hover:bg-gray-600 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
             Previous
         </button>
-        <span id="slide-counter" class="text-gray-400 font-medium">1 / 12</span>
+        <span id="slide-counter" class="text-gray-400 font-medium text-sm sm:text-base">1 / 12</span>
         <button id="next-btn" class="bg-gray-700 text-white hover:bg-gray-600 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
             Next
         </button>
@@ -191,13 +193,11 @@
                 percent = Math.max(0, Math.min(100, percent));
                 slider.style.left = `${percent}%`;
                 
-                // Clip the positive image and text
                 const clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
                 positiveSide.style.clipPath = clipPath;
                 positiveText.style.clipPath = clipPath;
 
-                // Fade out the negative text as the slider moves
-                const opacity = Math.max(0, 1 - (percent / 50)); // Fades out by the time slider is at 50%
+                const opacity = Math.max(0, 1 - (percent / 50));
                 negativeText.style.opacity = opacity;
             }
             
@@ -243,7 +243,7 @@
             prevBtn.addEventListener('click', showPrev);
 
             updateContent();
-            setSliderPosition(0); // Start with positive side hidden
+            setSliderPosition(0); 
         });
     </script>
 </body>
