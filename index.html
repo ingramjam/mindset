@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mindset Flip</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Anton', sans-serif;
@@ -113,9 +113,9 @@
 </head>
 <body class="bg-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div class="text-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-white">Mindset Flip</h1>
-        <p class="text-gray-400 mt-2">Swipe the handle to change your perspective.</p>
+    <div class="text-center mb-8 max-w-3xl mx-auto">
+        <h1 class="text-3xl md:text-4xl font-bold text-white">Change Your Thinking</h1>
+        <p class="text-gray-400 mt-4 font-sans" style="font-family: 'Inter', sans-serif;">Urges can feel pretty “loud” in your mind. It’s important that you learn how to talk back to these urges. Here are some suggestions for having a more positive mindset about quitting and urges:</p>
     </div>
 
     <div id="swipe-container" class="swipe-container">
@@ -146,7 +146,7 @@
         <button id="prev-btn" class="bg-gray-700 text-white hover:bg-gray-600 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
             Previous
         </button>
-        <span id="slide-counter" class="text-gray-400 font-medium">1 / 8</span>
+        <span id="slide-counter" class="text-gray-400 font-medium">1 / 12</span>
         <button id="next-btn" class="bg-gray-700 text-white hover:bg-gray-600 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
             Next
         </button>
@@ -171,7 +171,11 @@
                 { urge: "I MISS VAPING WITH FRIENDS.", affirmation: "I CAN ENJOY FRIENDS WITHOUT VAPING." },
                 { urge: "QUITTING IS TOO HARD.", affirmation: "I'VE ALREADY COME SO FAR." },
                 { urge: "THE CRAVINGS ARE TOO STRONG.", affirmation: "CRAVINGS ARE TEMPORARY." },
-                { urge: "I'LL QUIT TOMORROW.", affirmation: "MY HEALTH IS WORTH IT TODAY." }
+                { urge: "I'LL QUIT TOMORROW.", affirmation: "MY HEALTH IS WORTH IT TODAY." },
+                { urge: "I MUST ACT ON THIS FEELING!", affirmation: "AN URGE IS A FEELING, NOT A COMMAND." },
+                { urge: "I HATE THIS DISCOMFORT!", affirmation: "IT'S OKAY TO FEEL SOME DISCOMFORT." },
+                { urge: "THIS WILL NEVER END!", affirmation: "THIS WILL PASS." },
+                { urge: "THIS IS IMPOSSIBLE!", affirmation: "I'M PROUD OF HOW HARD I'M WORKING." }
             ];
             let currentContentIndex = 0;
             let isDragging = false;
@@ -219,13 +223,9 @@
                 isDragging = true;
             }
 
-
-
             function onUp(e) {
                 isDragging = false;
             }
-
-
 
             function onMove(e) {
                 if (!isDragging) return;
