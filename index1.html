@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindset Flip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Anton', sans-serif;
+            touch-action: none; 
+        }
+
+        .swipe-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 1.77; /* Match image aspect ratio */
+            margin: auto;
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            user-select: none; 
+            background-color: #000000; /* Black background */
+        }
+
+        .swipe-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swipe-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Use contain to see the whole image */
+            pointer-events: none; 
+        }
+
+        #negative-side {
+            z-index: 1;
+        }
+
+        #positive-side {
+            z-index: 2;
+            clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%); /* Start hidden */
+        }
+        
+        .message-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: clamp(1.2rem, 5vw, 2.2rem);
+            font-weight: 400;
+            text-align: center;
+            color: black; /* Changed to black */
+            padding: 1rem;
+            width: 45%;
+            line-height: 1.1;
+            transition: opacity 0.2s ease-out; /* Add transition for smooth fade */
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.4); /* Adjusted for black text */
+        }
+
+        #negative-text {
+            right: 5%;
+            z-index: 1;
+        }
+
+        #positive-text {
+            left: 5%;
+            z-index: 3; /* Above the positive image */
+            clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%); /* Sync with image clip-path */
+        }
+
+        #slider {
+            position: absolute;
+            top: 0;
+            left: 0%; /* Start at the left */
+            width: 4px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            cursor: ew-resize;
+            z-index: 4;
+            transform: translateX(-50%);
+        }
+
+        #slider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: #10B981; /* Changed to green */
+            border-radius: 50%;
+            border: 2px solid #059669; /* Darker green border */
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        #slider-handle svg {
+            width: 24px;
+            height: 24px;
+            color: white; /* Changed to white for contrast */
+        }
+
+    </style>
+</head>
+<body class="bg-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-white">Mindset Flip</h1>
+        <p class="text-gray-400 mt-2">Swipe the handle to change your perspective.</p>
+    </div>
+
+    <div id="swipe-container" class="swipe-container">
+        <!-- Base Layer: Negative -->
+        <div id="negative-side" class="swipe-image-container">
+            <img src="https://static.wixstatic.com/media/43bd37_7a86a3cc63fe412d904be62db3b7b650~mv2.jpg" class="swipe-image" alt="Negative thought visualization" onerror="this.onerror=null;this.src='https://placehold.co/800x450/000000/ffffff?text=Image+Not+Found';">
+            <div id="negative-text" class="message-text"></div>
+        </div>
+        
+        <!-- Overlay Layer: Positive -->
+        <div id="positive-side" class="swipe-image-container">
+            <img src="https://static.wixstatic.com/media/43bd37_94fc0b8331274dea8da06bb31a283444~mv2.jpg" class="swipe-image" alt="Positive thought visualization" onerror="this.onerror=null;this.src='https://placehold.co/800x450/000000/ffffff?text=Image+Not+Found';">
+        </div>
+        <div id="positive-text" class="message-text"></div>
+
+        <!-- Slider handle -->
+        <div id="slider">
+            <div id="slider-handle">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7 7-7m4 14l7-7-7-7" />
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Buttons -->
+    <div class="flex items-center space-x-4 mt-8">
+        <button id="prev-btn" class="bg-gray-700 text-white hover:bg-gray-600 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            Previous
+        </button>
+        <span id="slide-counter" class="text-gray-400 font-medium">1 / 8</span>
+        <button id="next-btn" class="bg-gray-700 text-white hover:bg-gray-600 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+            Next
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('swipe-container');
+            const positiveSide = document.getElementById('positive-side');
+            const positiveText = document.getElementById('positive-text');
+            const negativeText = document.getElementById('negative-text');
+            const slider = document.getElementById('slider');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const slideCounter = document.getElementById('slide-counter');
+
+            const content = [
+                { urge: "I NEED TO SMOKE!", affirmation: "THIS FEELING WILL PASS!" },
+                { urge: "JUST ONE WON'T HURT.", affirmation: "I'M PROUD OF STAYING QUIT." },
+                { urge: "EVERYONE ELSE IS.", affirmation: "I'M DOING THIS FOR MY HEALTH." },
+                { urge: "I CAN'T HANDLE THIS.", affirmation: "I AM STRONG ENOUGH." },
+                { urge: "I MISS VAPING WITH FRIENDS.", affirmation: "I CAN ENJOY FRIENDS WITHOUT VAPING." },
+                { urge: "QUITTING IS TOO HARD.", affirmation: "I'VE ALREADY COME SO FAR." },
+                { urge: "THE CRAVINGS ARE TOO STRONG.", affirmation: "CRAVINGS ARE TEMPORARY." },
+                { urge: "I'LL QUIT TOMORROW.", affirmation: "MY HEALTH IS WORTH IT TODAY." }
+            ];
+            let currentContentIndex = 0;
+            let isDragging = false;
+            
+            function updateContent() {
+                const current = content[currentContentIndex];
+                negativeText.textContent = current.urge;
+                positiveText.textContent = current.affirmation;
+                slideCounter.textContent = `${currentContentIndex + 1} / ${content.length}`;
+            }
+
+            function setSliderPosition(percent) {
+                percent = Math.max(0, Math.min(100, percent));
+                slider.style.left = `${percent}%`;
+                
+                // Clip the positive image and text
+                const clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+                positiveSide.style.clipPath = clipPath;
+                positiveText.style.clipPath = clipPath;
+
+                // Fade out the negative text as the slider moves
+                const opacity = Math.max(0, 1 - (percent / 50)); // Fades out by the time slider is at 50%
+                negativeText.style.opacity = opacity;
+            }
+            
+            function moveSlider(x) {
+                const rect = container.getBoundingClientRect();
+                const percent = ((x - rect.left) / rect.width) * 100;
+                setSliderPosition(percent);
+            }
+
+            function showNext() {
+                currentContentIndex = (currentContentIndex + 1) % content.length;
+                updateContent();
+                setSliderPosition(0);
+            }
+            
+            function showPrev() {
+                currentContentIndex = (currentContentIndex - 1 + content.length) % content.length;
+                updateContent();
+                setSliderPosition(0);
+            }
+
+            function onDown(e) {
+                isDragging = true;
+            }
+
+
+
+            function onUp(e) {
+                isDragging = false;
+            }
+
+
+
+            function onMove(e) {
+                if (!isDragging) return;
+                const x = e.clientX || e.touches[0].clientX;
+                moveSlider(x);
+            }
+
+            slider.addEventListener('mousedown', onDown);
+            document.addEventListener('mouseup', onUp);
+            document.addEventListener('mousemove', onMove);
+            slider.addEventListener('touchstart', onDown);
+            document.addEventListener('touchend', onUp);
+            document.addEventListener('touchmove', onMove);
+            nextBtn.addEventListener('click', showNext);
+            prevBtn.addEventListener('click', showPrev);
+
+            updateContent();
+            setSliderPosition(0); // Start with positive side hidden
+        });
+    </script>
+</body>
+</html>
